@@ -3730,6 +3730,17 @@
         let handsModel = null;
         let cameraStream = null;
         let isFrameBusy = false;
+
+        // Atur rasio kotak pratinjau agar sama dengan video sumber.
+        // Hanya memengaruhi layout video dan overlay, bukan landmark atau klasifikasi.
+        function syncCameraFrameAspect() {
+            const frame = document.getElementById('camera-frame');
+            if (!frame || !videoElement || !videoElement.videoWidth || !videoElement.videoHeight) return;
+            frame.style.aspectRatio = window.matchMedia('(max-width: 640px)').matches
+                ? `${videoElement.videoWidth} / ${videoElement.videoHeight}`
+                : '';
+        }
+        window.addEventListener('resize', syncCameraFrameAspect, { passive: true });
         let visualSmoothedHands = [];
 
         // Penyaring adaptif (One-Euro style) agar garis kerangka anteng saat diam namun sigap tanpa lag saat bergerak cepat
@@ -3865,6 +3876,7 @@
                 videoElement.srcObject = mediaStream;
                 await videoElement.play();
                 cameraStream = mediaStream;
+                syncCameraFrameAspect();
 
                 const processVideoLoop = async () => {
                     if (!cameraStream) return;
