@@ -1527,6 +1527,9 @@
         const SIBI_LEARNING_TILE_IMAGES = Object.fromEntries(
             'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => [letter, `assets/abjad/tile-${letter.toLowerCase()}.png`])
         );
+        const BISINDO_LEARNING_TILE_IMAGES = Object.fromEntries(
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => [letter, `assets/bisindo/tile-${letter.toLowerCase()}.png`])
+        );
 
         function renderSignHandIllustration(system, letter, opts = {}) {
             const cleanLetter = (letter || 'A').toString().trim().toUpperCase()[0] || 'A';
@@ -1536,10 +1539,11 @@
             const bgTint = isBisindo ? '#EFF8FF' : '#F2FDE8';
             const showBadge = Boolean(opts.showBadge);
 
-            if (!isBisindo && SIBI_LEARNING_TILE_IMAGES[cleanLetter]) {
+            const tileImages = isBisindo ? BISINDO_LEARNING_TILE_IMAGES : SIBI_LEARNING_TILE_IMAGES;
+            if (tileImages[cleanLetter]) {
                 return `
                     <div class="relative w-full h-full">
-                        <img src="${SIBI_LEARNING_TILE_IMAGES[cleanLetter]}" alt="Isyarat huruf ${cleanLetter} SIBI" class="w-full h-full object-contain select-none pointer-events-none" loading="lazy" decoding="async" draggable="false">
+                        <img src="${tileImages[cleanLetter]}" alt="Isyarat huruf ${cleanLetter} ${sys}" class="w-full h-full object-contain select-none pointer-events-none" loading="lazy" decoding="async" draggable="false">
                         ${showBadge ? `<span class="absolute top-1 right-1 rounded-md bg-duo_green px-1.5 py-0.5 text-[10px] font-black text-white">${cleanLetter}</span>` : ''}
                     </div>
                 `;
