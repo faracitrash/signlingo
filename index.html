@@ -652,9 +652,9 @@
                                     <span id="tf-saved-letters-badge" class="text-[10px] font-extrabold text-duo_green bg-green-950/80 border border-green-800 px-2 py-0.5 rounded-lg">Permanen: Belum ada</span>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    <button onclick="exportTrainedModelCode()" title="Salin/Unduh Data Latihan Permanen" class="px-2.5 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 text-[10px] font-black flex items-center gap-1 transition">
+                                    <button onclick="exportTrainedModelCode()" id="btn-export-trained-poses" title="Ekspor data latihan" class="px-2.5 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 text-[10px] font-black flex items-center gap-1 transition">
                                         <i class="fa-solid fa-download"></i>
-                                        <span>Ekspor</span>
+                                        <span id="btn-export-trained-label">Ekspor SIBI</span>
                                     </button>
                                     <button onclick="runLiveCNNCalibration()" id="btn-run-tf-fit" class="px-3 py-1.5 rounded-xl bg-duo_green hover:bg-duo_green_dark text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5 transition">
                                         <i class="fa-solid fa-microchip"></i>
@@ -3115,6 +3115,18 @@
         };
 
         function exportTrainedModelCode() {
+            if (signSystem === 'BISINDO') {
+                const payload = loadBisindoCustomPoses();
+                const letters = Object.keys(payload).filter(letter => Array.isArray(payload[letter]) && payload[letter].length > 0);
+                const sampleCount = letters.reduce((sum, letter) => sum + payload[letter].length, 0);
+                if (!sampleCount) {
+                    showToast('Belum ada sampel BISINDO tersimpan di browser ini.', 'fa-solid fa-circle-info text-duo_blue');
+                    return;
+                }
+                const snippet = `const BISINDO_PERMANENT_TRAINED_POSES = ${JSON.stringify(payload)};`;
+                copyTrainingExportText(snippet, `bisindo-trained-poses-${Date.now()}.txt`, `Data BISINDO ${letters.length} huruf (${sampleCount} sampel) diekspor.`);
+                return;
+            }
             if (keypointNet.trainedLettersSet.size === 0) {
                 showToast('Belum ada huruf yang dilatih untuk diekspor.', 'fa-solid fa-circle-info text-duo_blue');
                 return;
@@ -3127,13 +3139,44 @@
                 customPayload[ltr].push(keypointNet.customSamplesX[i].map(v => Number(v.toFixed(4))));
             }
             const codeSnippet = `const PERMANENT_TRAINED_POSES = ${JSON.stringify(customPayload)};`;
-            const tempArea = document.createElement('textarea');
-            tempArea.value = codeSnippet;
-            document.body.appendChild(tempArea);
-            tempArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempArea);
-            showToast(`Data ${keypointNet.trainedLettersSet.size} huruf tersalin! Bisa ditempel ke kode.`);
+            copyTrainingExportText(codeSnippet, `sibi-trained-poses-${Date.now()}.txt`, `Data SIBI ${keypointNet.trainedLettersSet.size} huruf diekspor.`);
+        }
+
+        function copyTrainingExportText(text, filename, successMessage) {
+            const fallbackCopy = () => {
+                const tempArea = document.createElement('textarea');
+                tempArea.value = text;
+                tempArea.setAttribute('readonly', '');
+                tempArea.style.position = 'fixed';
+                tempArea.style.opacity = '0';
+                document.body.appendChild(tempArea);
+                tempArea.select();
+                let copied = false;
+                try { copied = document.execCommand('copy'); } catch (_) {}
+                document.body.removeChild(tempArea);
+                return copied;
+            };
+            const download = () => {
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => showToast(successMessage)).catch(() => {
+                    if (fallbackCopy()) showToast(successMessage);
+                    else { download(); showToast('Clipboard tidak tersedia; file ekspor diunduh.'); }
+                });
+            } else if (fallbackCopy()) {
+                showToast(successMessage);
+            } else {
+                download();
+                showToast('Clipboard tidak tersedia; file ekspor diunduh.');
+            }
         }
 
         // ==========================================
@@ -3725,6 +3768,10 @@
             if (modelStatus && sys === 'BISINDO') {
                 modelStatus.innerText = `RF Hugging Face + ${Object.keys(bisindoCustomPoses).length} huruf lokal`;
             }
+            const exportButton = document.getElementById('btn-export-trained-poses');
+            const exportLabel = document.getElementById('btn-export-trained-label');
+            if (exportButton) exportButton.title = `Ekspor sampel latihan ${sys}`;
+            if (exportLabel) exportLabel.innerText = `Ekspor ${sys}`;
 
             selectedQuickHintItem = sys === 'KATA' ? BASIC_WORDS_LIST[0] : 'A';
             renderQuickGuide();
@@ -4270,9 +4317,24 @@
         // Space metadata marks the license as "other"; attribution is retained in this local adaptation.
         const BISINDO_SINGLE_HAND_LETTERS = new Set(['C','E','I','J','L','O','R','U','V','Z']);
         const BISINDO_CUSTOM_STORAGE_KEY = 'signlingo_bisindo_custom_poses_v1';
+        const BISINDO_PERMANENT_TRAINED_POSES = {};
         function loadBisindoCustomPoses() {
-            try { return JSON.parse(localStorage.getItem(BISINDO_CUSTOM_STORAGE_KEY) || '{}') || {}; }
-            catch (_) { return {}; }
+            let localPoses = {};
+            try { localPoses = JSON.parse(localStorage.getItem(BISINDO_CUSTOM_STORAGE_KEY) || '{}') || {}; }
+            catch (_) {}
+            const merged = {};
+            for (const source of [BISINDO_PERMANENT_TRAINED_POSES, localPoses]) {
+                for (const [letter, samples] of Object.entries(source || {})) {
+                    if (!Array.isArray(samples)) continue;
+                    const previous = Array.isArray(merged[letter]) ? merged[letter] : [];
+                    const seen = new Set(previous.map(sample => `${sample.handCount}:${sample.features.join(',')}`));
+                    const clean = samples.filter(sample => sample && (sample.handCount === 1 || sample.handCount === 2) &&
+                        Array.isArray(sample.features) && sample.features.length === 126 && sample.features.every(Number.isFinite) &&
+                        !seen.has(`${sample.handCount}:${sample.features.join(',')}`));
+                    merged[letter] = previous.concat(clean).slice(-90);
+                }
+            }
+            return merged;
         }
         let bisindoCustomPoses = loadBisindoCustomPoses();
 
