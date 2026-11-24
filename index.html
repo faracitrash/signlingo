@@ -4505,7 +4505,7 @@
         function stabilizeBisindoHF(prediction,handCount,dtMs=33) {
             const uncertain = !prediction ||
                 (handCount<2 && !BISINDO_SINGLE_HAND_LETTERS.has(prediction.letter)) ||
-                prediction.confidence<0.75;
+                prediction.confidence<0.70;
             if(uncertain){
                 bisindoHFUncertainMs += dtMs;
                 if(bisindoHFUncertainMs >= BISINDO_HF_GRACE_MS){
@@ -4515,12 +4515,12 @@
             }
             bisindoHFUncertainMs = 0;
             bisindoHFVoteBuffer.push(prediction.letter);
-            if(bisindoHFVoteBuffer.length>5) bisindoHFVoteBuffer.shift();
+            if(bisindoHFVoteBuffer.length>3) bisindoHFVoteBuffer.shift();
             const counts={};
             for(const letter of bisindoHFVoteBuffer) counts[letter]=(counts[letter]||0)+1;
             const [winner,count]=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0]||['',0];
             const voteRatio=count/Math.max(1,bisindoHFVoteBuffer.length);
-            if(bisindoHFVoteBuffer.length===5 && voteRatio>=0.8 && winner===prediction.letter){
+            if(bisindoHFVoteBuffer.length===3 && voteRatio>=0.67 && winner===prediction.letter){
                 bisindoHFStableLetter=winner;
                 bisindoHFStableConfidence=prediction.confidencePercent;
             }
@@ -4685,7 +4685,7 @@
                 if (top3El) {
                     if (top3List.length > 0) {
                         const candidateNote = signSystem === 'BISINDO'
-                            ? '<span class="w-full text-[9px] font-bold text-sky-300">Kandidat cepat · layar utama menunggu 4 dari 5 frame stabil</span>'
+                            ? '<span class="w-full text-[9px] font-bold text-sky-300">Kandidat cepat · layar utama menunggu 2 dari 3 frame stabil</span>'
                             : '';
                         top3El.innerHTML = candidateNote + top3List.map((item, idx) => `
                             <span class="px-1.5 py-0.5 rounded ${idx === 0 ? 'bg-green-950 text-duo_green border border-green-700' : 'bg-gray-900 text-gray-400 border border-gray-800'}">
