@@ -1111,59 +1111,76 @@
             </main>
 
             <!-- TAB 5: PROFIL & PENCAPAIAN -->
-            <main id="tab-profile" class="tab-content flex-1 flex-col space-y-5">
-                <div class="bg-white rounded-3xl border-2 border-gray-200 p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-center gap-5">
-                    <div id="profile-avatar-circle" role="img" aria-label="Avatar profil" class="w-24 h-24 rounded-3xl bg-duo_green text-white flex items-center justify-center text-4xl shadow-md border-4 border-white ring-4 ring-green-100 shrink-0">
-                        <i class="fa-solid fa-face-smile"></i>
-                    </div>
-                    <div class="flex-1 w-full text-center sm:text-left space-y-2">
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                            <span id="profile-rank-badge" class="text-[11px] font-black uppercase px-3 py-1 rounded-xl bg-green-100 text-duo_green border border-green-200">Level 1 • Penjelajah Isyarat</span>
+            <main id="tab-profile" class="tab-content flex-1 flex-col space-y-4 sm:space-y-5">
+                <section class="profile-hero-card bg-white rounded-3xl border-2 border-gray-200 p-5 sm:p-6 shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+                        <div id="profile-avatar-circle" role="img" aria-label="Avatar profil" class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-duo_green text-white flex items-center justify-center text-4xl shadow-md border-4 border-white ring-4 ring-green-100 shrink-0 mx-auto sm:mx-0">
+                            <i class="fa-solid fa-face-smile"></i>
                         </div>
-                        <div class="flex items-center gap-2 max-w-sm mx-auto sm:mx-0">
-                            <input type="text" id="profile-name-input" value="Sahabat Inklusi" class="flex-1 bg-gray-100 border-2 border-gray-200 rounded-xl px-3 py-2 text-sm font-black text-gray-800 focus:outline-none focus:border-duo_green focus:bg-white">
-                            <button onclick="saveProfileName()" class="px-3.5 py-2 rounded-xl bg-duo_blue text-white font-black text-xs btn-chunky btn-blue">Simpan</button>
-                        </div>
-                        <div class="max-w-sm mx-auto sm:mx-0 w-full p-3 rounded-2xl bg-blue-50 border border-blue-100 space-y-2">
-                            <div class="flex items-center gap-2 text-sm font-black text-gray-800"><i class="fa-brands fa-google text-duo_blue" aria-hidden="true"></i><span>Akun &amp; sinkronisasi</span></div>
-                            <p id="cloud-account-status" aria-live="polite" class="text-[11px] font-bold text-gray-600">Menyiapkan penyimpanan...</p>
-                            <div class="flex gap-2">
-                                <button id="btn-google-signin" onclick="loginWithGoogle()" class="px-3 py-2 rounded-xl bg-white border border-blue-200 text-blue-800 font-black text-xs flex items-center gap-1.5">
-                                    <i class="fa-brands fa-google" aria-hidden="true"></i> Masuk dengan Google
-                                </button>
-                                <button id="btn-google-signout" onclick="logoutGoogle()" class="hidden px-3 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 font-black text-xs">Keluar</button>
+                        <div class="flex-1 min-w-0 text-center sm:text-left">
+                            <span id="profile-rank-badge" class="inline-flex text-[10px] sm:text-[11px] font-black uppercase px-3 py-1 rounded-xl bg-green-100 text-green-800 border border-green-200">Level 1 • Sahabat Inklusif</span>
+                            <h2 id="profile-display-name" class="mt-2 text-2xl sm:text-3xl font-black text-gray-900 truncate">Sahabat Inklusi</h2>
+                            <div class="flex gap-2 mt-3 max-w-lg mx-auto sm:mx-0">
+                                <label for="profile-name-input" class="sr-only">Nama profil</label>
+                                <input type="text" id="profile-name-input" value="Sahabat Inklusi" maxlength="32" autocomplete="nickname" class="min-w-0 flex-1 bg-gray-50 border-2 border-gray-200 rounded-xl px-3 py-2.5 text-sm font-bold text-gray-800 focus:outline-none focus:border-duo_green focus:bg-white" placeholder="Nama profil">
+                                <button onclick="saveProfileName()" class="px-4 py-2.5 rounded-xl bg-duo_blue text-white font-black text-xs btn-chunky btn-blue">Simpan</button>
                             </div>
                         </div>
-                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                            <button onclick="exportUserBackup()" aria-label="Unduh cadangan progres dan data latihan" class="px-3 py-2 rounded-xl bg-green-50 border border-green-200 text-green-800 font-black text-xs flex items-center gap-1.5">
+                        <div class="w-full sm:w-64 rounded-2xl bg-gradient-to-br from-green-50 to-lime-50 border border-green-100 p-4">
+                            <div class="flex items-center justify-between text-xs font-black text-green-900 mb-2">
+                                <span id="profile-level-label">Level 1</span><span id="profile-level-xp-text">0 / 200 XP</span>
+                            </div>
+                            <div class="w-full bg-white/80 h-3 rounded-full overflow-hidden border border-green-100" role="progressbar" aria-label="Progres menuju level berikutnya" aria-valuemin="0" aria-valuemax="200" aria-valuenow="0">
+                                <div id="profile-level-bar" class="bg-duo_green h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="profile-next-level-hint" class="text-[10px] font-bold text-green-800 mt-2">Kumpulkan XP dari belajar dan trivia.</p>
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-gray-100 flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                        <span class="text-[10px] font-black uppercase tracking-wide text-gray-500 mr-1">Warna avatar</span>
+                        <button data-avatar-option="bg-duo_green" onclick="changeAvatarColor('bg-duo_green', 'ring-green-100')" aria-label="Pilih avatar hijau" aria-pressed="false" class="w-7 h-7 rounded-full bg-duo_green border-2 border-white shadow-sm ring-2 ring-transparent"></button>
+                        <button data-avatar-option="bg-duo_blue" onclick="changeAvatarColor('bg-duo_blue', 'ring-blue-100')" aria-label="Pilih avatar biru" aria-pressed="false" class="w-7 h-7 rounded-full bg-duo_blue border-2 border-white shadow-sm ring-2 ring-transparent"></button>
+                        <button data-avatar-option="bg-duo_purple" onclick="changeAvatarColor('bg-duo_purple', 'ring-purple-100')" aria-label="Pilih avatar ungu" aria-pressed="false" class="w-7 h-7 rounded-full bg-duo_purple border-2 border-white shadow-sm ring-2 ring-transparent"></button>
+                        <button data-avatar-option="bg-amber-500" onclick="changeAvatarColor('bg-amber-500', 'ring-amber-100')" aria-label="Pilih avatar jingga" aria-pressed="false" class="w-7 h-7 rounded-full bg-amber-500 border-2 border-white shadow-sm ring-2 ring-transparent"></button>
+                    </div>
+                </section>
+
+                <section class="bg-white rounded-3xl border-2 border-gray-200 p-4 sm:p-5 shadow-sm" aria-labelledby="account-sync-heading">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-duo_blue flex items-center justify-center text-xl shrink-0 mx-auto sm:mx-0"><i class="fa-brands fa-google" aria-hidden="true"></i></div>
+                        <div class="flex-1 min-w-0 text-center sm:text-left">
+                            <div class="flex items-center justify-center sm:justify-start gap-2">
+                                <h3 id="account-sync-heading" class="font-black text-gray-900">Akun &amp; sinkronisasi</h3>
+                                <span id="cloud-account-indicator" class="w-2.5 h-2.5 rounded-full bg-amber-400" aria-hidden="true"></span>
+                            </div>
+                            <p id="cloud-account-email" class="text-xs font-extrabold text-gray-700 mt-1 truncate">Belum terhubung</p>
+                            <p id="cloud-account-status" aria-live="polite" class="text-[11px] font-bold text-gray-500 mt-0.5">Menyiapkan penyimpanan...</p>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <button id="btn-google-signin" onclick="loginWithGoogle()" aria-label="Masuk dengan akun Google untuk sinkronisasi" class="px-4 py-2.5 rounded-xl bg-white border-2 border-blue-200 text-blue-800 hover:bg-blue-50 font-black text-xs flex items-center gap-2 transition">
+                                <i class="fa-brands fa-google" aria-hidden="true"></i> Masuk dengan Google
+                            </button>
+                            <button id="btn-cloud-sync-now" onclick="syncGoogleAccountNow()" aria-label="Sinkronkan progres dan latihan sekarang" class="hidden px-4 py-2.5 rounded-xl bg-blue-600 border-2 border-blue-600 text-white hover:bg-blue-700 font-black text-xs flex items-center gap-2 transition">
+                                <i class="fa-solid fa-rotate" aria-hidden="true"></i> Sinkronkan
+                            </button>
+                            <button id="btn-google-signout" onclick="logoutGoogle()" aria-label="Keluar dari akun Google" class="hidden px-4 py-2.5 rounded-xl bg-gray-50 border-2 border-gray-200 text-gray-700 hover:bg-gray-100 font-black text-xs">Keluar</button>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <p id="cloud-sync-note" class="text-[10px] font-bold text-gray-500">Progres tersimpan otomatis di perangkat ini.</p>
+                        <div class="flex flex-wrap gap-2 justify-center sm:justify-end">
+                            <button onclick="exportUserBackup()" aria-label="Unduh cadangan progres dan data latihan" class="px-3 py-2 rounded-xl bg-green-50 border border-green-200 text-green-800 hover:bg-green-100 font-black text-xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-download" aria-hidden="true"></i> Unduh cadangan
                             </button>
-                            <label for="user-backup-file" class="cursor-pointer px-3 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 font-black text-xs flex items-center gap-1.5">
+                            <label for="user-backup-file" class="cursor-pointer px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 font-black text-xs flex items-center gap-1.5">
                                 <i class="fa-solid fa-upload" aria-hidden="true"></i> Pulihkan cadangan
                             </label>
                             <input id="user-backup-file" type="file" accept="application/json,.json" class="hidden" aria-label="Pilih file cadangan SignLingo" onchange="importUserBackup(event)">
                         </div>
-                        <p class="text-[10px] font-bold text-gray-400">Progres tersimpan di browser. Setelah Firebase disiapkan dan kamu masuk Google, progres serta latihan akan ikut tersinkronkan ke akun.</p>
-                        <div class="space-y-1 pt-1">
-                            <div class="flex justify-between text-[11px] font-extrabold text-gray-500">
-                                <span id="profile-level-label">Level 1</span>
-                                <span id="profile-level-xp-text">0 / 200 XP menuju Level 2</span>
-                            </div>
-                            <div class="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
-                                <div id="profile-level-bar" class="bg-duo_green h-full rounded-full transition-all duration-500" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-center sm:justify-start gap-2 pt-1">
-                            <span class="text-[10px] font-black uppercase text-gray-400">Warna Avatar:</span>
-                            <button onclick="changeAvatarColor('bg-duo_green', 'ring-green-100')" aria-label="Pilih avatar hijau" class="w-6 h-6 rounded-full bg-duo_green border-2 border-white shadow-xs"></button>
-                            <button onclick="changeAvatarColor('bg-duo_blue', 'ring-blue-100')" aria-label="Pilih avatar biru" class="w-6 h-6 rounded-full bg-duo_blue border-2 border-white shadow-xs"></button>
-                            <button onclick="changeAvatarColor('bg-duo_purple', 'ring-purple-100')" class="w-6 h-6 rounded-full bg-duo_purple border-2 border-white shadow-xs"></button>
-                            <button onclick="changeAvatarColor('bg-amber-500', 'ring-amber-100')" class="w-6 h-6 rounded-full bg-amber-500 border-2 border-white shadow-xs"></button>
-                        </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- 4 Statistik Utama -->
+                <!-- Statistik berasal dari aktivitas belajar yang tersimpan -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div class="bg-white rounded-2xl border-2 border-gray-200 p-4 flex items-center space-x-3 shadow-xs">
                         <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl shrink-0">
@@ -1190,6 +1207,7 @@
                         <div>
                             <span class="text-xl font-black text-gray-800 block leading-none" id="stat-stages-completed">0</span>
                             <span class="text-[11px] font-bold text-gray-400">Stage Selesai</span>
+                            <span id="stat-stages-total" class="text-[10px] font-bold text-gray-500">dari 12</span>
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl border-2 border-gray-200 p-4 flex items-center space-x-3 shadow-xs">
@@ -1199,9 +1217,19 @@
                         <div>
                             <span class="text-xl font-black text-gray-800 block leading-none" id="stat-trivia-correct">0</span>
                             <span class="text-[11px] font-bold text-gray-400">Trivia Benar</span>
+                            <span id="stat-trivia-detail" class="text-[10px] font-bold text-gray-500">0 dijawab • 0% akurasi</span>
                         </div>
                     </div>
                 </div>
+
+                <section class="bg-white rounded-3xl border-2 border-gray-200 p-4 sm:p-5 shadow-sm" aria-labelledby="profile-daily-progress-heading">
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <h3 id="profile-daily-progress-heading" class="font-black text-sm text-gray-800 flex items-center gap-2"><i class="fa-solid fa-bullseye text-duo_green" aria-hidden="true"></i> Target harian</h3>
+                        <span id="profile-daily-xp-text" class="text-xs font-black text-green-800">0 / 50 XP</span>
+                    </div>
+                    <div class="h-2.5 bg-gray-100 rounded-full overflow-hidden"><div id="profile-daily-xp-bar" class="h-full bg-duo_green rounded-full transition-all duration-500" style="width:0%"></div></div>
+                    <p class="text-[10px] font-bold text-gray-500 mt-2">XP harian kembali ke nol setiap hari; XP total dan level tetap tersimpan.</p>
+                </section>
 
                 <!-- Koleksi Lencana / Achievements -->
                 <div class="bg-white rounded-3xl border-2 border-gray-200 p-5 sm:p-6 shadow-sm space-y-4">
@@ -1297,7 +1325,7 @@
                 <i class="fa-solid fa-fire"></i>
             </div>
             <h2 class="text-2xl font-black text-gray-800"><span class="streak-count-display">0</span> Hari Streak!</h2>
-            <p class="text-xs font-bold text-gray-500 mt-1 mb-5">Belajar setiap hari menjaga nyala api streak dan meningkatkan daya ingat isyaratmu.</p>
+            <p class="text-xs font-bold text-gray-500 mt-1 mb-5">Selesaikan tahap, jawab trivia, rangkai isyarat, atau check-in sekali sehari untuk menjaga streak belajar.</p>
 
             <div class="w-full bg-amber-50/70 rounded-2xl border-2 border-amber-200 p-4 mb-5">
                 <div class="grid grid-cols-7 gap-1.5 text-center" id="modal-streak-days"></div>
@@ -3427,10 +3455,30 @@
 
         function updateCloudAccountUI(user, message = '') {
             const status = document.getElementById('cloud-account-status');
+            const email = document.getElementById('cloud-account-email');
+            const indicator = document.getElementById('cloud-account-indicator');
+            const note = document.getElementById('cloud-sync-note');
             const signInButton = document.getElementById('btn-google-signin');
+            const syncButton = document.getElementById('btn-cloud-sync-now');
             const signOutButton = document.getElementById('btn-google-signout');
-            if (status) status.innerText = user ? `${user.displayName || user.email || 'Akun Google'} • ${message || 'Sinkronisasi aktif.'}` : (message || 'Penyimpanan lokal aktif.');
+            const connected = Boolean(user && window.SignLingoCloud?.ready);
+            const failed = /gagal|belum dapat|belum aktif|error/i.test(message);
+            const saving = /menyimpan|menyelaraskan|membuka/i.test(message);
+            if (email) email.innerText = connected ? (user.email || user.displayName || 'Akun Google tersambung') : 'Belum terhubung';
+            if (status) status.innerText = message || (connected ? 'Sinkronisasi akun aktif.' : 'Masuk untuk menyimpan progres lintas perangkat.');
+            if (indicator) {
+                indicator.className = `w-2.5 h-2.5 rounded-full ${failed ? 'bg-red-500' : saving ? 'bg-amber-400 animate-pulse' : connected ? 'bg-duo_green' : 'bg-amber-400'}`;
+                indicator.setAttribute('aria-label', failed ? 'Sinkronisasi bermasalah' : connected ? 'Akun tersambung' : 'Akun belum tersambung');
+            }
+            if (note) note.innerText = connected
+                ? 'Progres dan data latihan tersimpan di akun ini serta perangkat.'
+                : 'Tanpa login, progres tetap tersimpan di browser perangkat ini.';
             if (signInButton) signInButton.classList.toggle('hidden', Boolean(user));
+            if (syncButton) {
+                syncButton.classList.toggle('hidden', !user);
+                syncButton.disabled = saving;
+                syncButton.classList.toggle('opacity-60', saving);
+            }
             if (signOutButton) signOutButton.classList.toggle('hidden', !user);
         }
 
@@ -3463,9 +3511,20 @@
             }
         }
 
+        async function syncGoogleAccountNow() {
+            const user = window.SignLingoCloud?.user;
+            if (!user || !window.SignLingoCloud?.ready) {
+                showToast('Masuk ke akun Google sebelum menyinkronkan.');
+                return;
+            }
+            if (cloudHydrating) return;
+            await syncSignedInAccount(user, 'Menyelaraskan progres dan latihan...');
+            await keypointNet.syncFromCloud();
+        }
+
         async function syncSignedInAccount(user, message) {
             updateCloudAccountUI(user, user ? 'Menyelaraskan progres...' : message);
-            if (!user || !window.SignLingoCloud?.ready) return;
+            if (!user || !window.SignLingoCloud?.ready || cloudHydrating) return;
             cloudHydrating = true;
             try {
                 const localProgress = JSON.parse(localStorage.getItem(GAME_PROGRESS_STORAGE_KEY) || 'null');
@@ -3497,13 +3556,13 @@
                 renderDailyQuests();
                 renderProfile();
                 updateStatsUI();
-                updateCloudAccountUI(user, 'Tersinkron ke akun Google.');
-                showToast('Progres dan latihan tersinkron ke akun Google.');
+                updateCloudAccountUI(user, 'Akun terhubung. Menyelaraskan progres dan latihan...');
             } catch (error) {
                 console.error('Sinkronisasi akun gagal:', error);
                 updateCloudAccountUI(user, 'Akun tersambung, tetapi sinkronisasi gagal. Data lokal tetap aman.');
             } finally {
                 cloudHydrating = false;
+                if (user && window.SignLingoCloud?.ready) saveGameProgress();
             }
         }
 
@@ -3595,6 +3654,7 @@
             lastCheckInDate: null,
             hearts: 5,
             triviaCorrect: 0,
+            triviaAnsweredCount: 0,
             checkedInToday: false,
             profileName: 'Sahabat Inklusi',
             avatarBg: 'bg-duo_green',
@@ -3629,6 +3689,7 @@
                 const progress = {
                     xp: gameState.xp, dailyXp: gameState.dailyXp, streak: gameState.streak,
                     hearts: gameState.hearts, triviaCorrect: gameState.triviaCorrect,
+                    triviaAnsweredCount: gameState.triviaAnsweredCount,
                     profileName: gameState.profileName, checkedInToday: gameState.checkedInToday,
                     avatarBg: gameState.avatarBg, avatarRing: gameState.avatarRing,
                     lastCheckInDate: gameState.lastCheckInDate || null, savedDate: getLocalDateKey(),
@@ -3645,15 +3706,21 @@
             try {
                 const saved = JSON.parse(localStorage.getItem(GAME_PROGRESS_STORAGE_KEY) || 'null');
                 if (!saved || typeof saved !== 'object') return;
-                ['xp', 'dailyXp', 'streak', 'hearts', 'triviaCorrect'].forEach(key => {
+                ['xp', 'dailyXp', 'streak', 'hearts', 'triviaCorrect', 'triviaAnsweredCount'].forEach(key => {
                     if (Number.isFinite(saved[key])) gameState[key] = Math.max(0, saved[key]);
                 });
                 gameState.hearts = Math.min(5, gameState.hearts);
                 if (typeof saved.profileName === 'string' && saved.profileName.trim()) gameState.profileName = saved.profileName.trim();
-                if (['bg-duo_green', 'bg-duo_blue', 'bg-duo_purple'].includes(saved.avatarBg) && ['ring-green-100', 'ring-blue-100', 'ring-purple-100'].includes(saved.avatarRing)) {
+                const validAvatarPairs = {
+                    'bg-duo_green': 'ring-green-100',
+                    'bg-duo_blue': 'ring-blue-100',
+                    'bg-duo_purple': 'ring-purple-100',
+                    'bg-amber-500': 'ring-amber-100'
+                };
+                if (validAvatarPairs[saved.avatarBg] === saved.avatarRing) {
                     gameState.avatarBg = saved.avatarBg;
                     gameState.avatarRing = saved.avatarRing;
-                    changeAvatarColor(saved.avatarBg, saved.avatarRing);
+                    changeAvatarColor(saved.avatarBg, saved.avatarRing, false);
                 }
                 const nameInput = document.getElementById('profile-name-input');
                 if (nameInput) nameInput.value = gameState.profileName;
@@ -3785,8 +3852,12 @@
             const dailyPct = Math.min(100, Math.round((gameState.dailyXp / 50) * 100));
             const dailyText = document.getElementById('sidebar-daily-xp-text');
             const dailyBar = document.getElementById('sidebar-daily-xp-bar');
+            const profileDailyText = document.getElementById('profile-daily-xp-text');
+            const profileDailyBar = document.getElementById('profile-daily-xp-bar');
             if (dailyText) dailyText.innerText = `${gameState.dailyXp} / 50 XP`;
             if (dailyBar) dailyBar.style.width = `${dailyPct}%`;
+            if (profileDailyText) profileDailyText.innerText = `${gameState.dailyXp} / 50 XP`;
+            if (profileDailyBar) profileDailyBar.style.width = `${dailyPct}%`;
             saveGameProgress();
         }
 
@@ -3909,19 +3980,28 @@
             const m = document.getElementById('streak-modal');
             if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
         }
-        function claimDailyCheckIn() {
+        function recordLearningDay({ showMessage = true } = {}) {
             ensureDailyRollover();
-            if (gameState.checkedInToday) {
-                showToast('Check-in hari ini sudah diklaim!');
-                return;
-            }
+            if (gameState.checkedInToday) return false;
+            const today = getLocalDateKey();
+            const daysSinceCheckIn = dateKeyDifference(gameState.lastCheckInDate, today);
+            gameState.streak = daysSinceCheckIn === 1 ? gameState.streak + 1 : 1;
             gameState.checkedInToday = true;
-            gameState.lastCheckInDate = getLocalDateKey();
-            gameState.streak += 1;
+            gameState.lastCheckInDate = today;
             addXP(10);
             renderStreakCalendars();
-            confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
-            showToast('Check-in harian berhasil! +10 XP');
+            renderProfile();
+            confetti({ particleCount: 35, spread: 55, origin: { y: 0.6 } });
+            if (showMessage) showToast('Hari belajar tercatat! Streak +1 • 10 XP');
+            return true;
+        }
+
+        function claimDailyCheckIn() {
+            if (!recordLearningDay({ showMessage: false })) {
+                showToast('Aktivitas belajar hari ini sudah tercatat!');
+                return;
+            }
+            showToast('Check-in harian berhasil! Streak +1 • 10 XP');
         }
 
         function renderProfile() {
@@ -3933,23 +4013,48 @@
             const lblEl = document.getElementById('profile-level-label');
             const xpTxtEl = document.getElementById('profile-level-xp-text');
             const barEl = document.getElementById('profile-level-bar');
+            const progressBar = barEl?.parentElement;
             const stgEl = document.getElementById('stat-stages-completed');
+            const stgTotalEl = document.getElementById('stat-stages-total');
             const trvEl = document.getElementById('stat-trivia-correct');
+            const trvDetailEl = document.getElementById('stat-trivia-detail');
+            const displayName = document.getElementById('profile-display-name');
 
             const totalStagesDone = gameState.units.reduce((sum, u) => sum + u.completed.length, 0);
+            const totalStages = gameState.units.reduce((sum, u) => sum + u.stages.length, 0);
+            const accuracy = gameState.triviaAnsweredCount
+                ? Math.round((gameState.triviaCorrect / gameState.triviaAnsweredCount) * 100)
+                : 0;
+            if (displayName) displayName.innerText = gameState.profileName;
+            document.querySelectorAll('[data-avatar-option]').forEach(button => {
+                const selected = button.dataset.avatarOption === gameState.avatarBg;
+                button.setAttribute('aria-pressed', String(selected));
+                button.classList.toggle('ring-2', selected);
+                button.classList.toggle('ring-gray-800', selected);
+                button.classList.toggle('ring-transparent', !selected);
+            });
             if (rankEl) rankEl.innerText = `Level ${level} • Sahabat Inklusif`;
             if (lblEl) lblEl.innerText = `Level ${level}`;
-            if (xpTxtEl) xpTxtEl.innerText = `${levelXp} / 200 XP menuju Level ${level + 1}`;
+            if (xpTxtEl) xpTxtEl.innerText = `${levelXp} / 200 XP`;
             if (barEl) barEl.style.width = `${pct}%`;
+            if (progressBar) progressBar.setAttribute('aria-valuenow', String(levelXp));
+            const nextLevelHint = document.getElementById('profile-next-level-hint');
+            if (nextLevelHint) nextLevelHint.innerText = `${200 - levelXp} XP lagi menuju Level ${level + 1}.`;
             if (stgEl) stgEl.innerText = totalStagesDone;
+            if (stgTotalEl) stgTotalEl.innerText = `dari ${totalStages}`;
             if (trvEl) trvEl.innerText = gameState.triviaCorrect;
+            if (trvDetailEl) trvDetailEl.innerText = gameState.triviaAnsweredCount
+                ? `${gameState.triviaAnsweredCount} dijawab • ${accuracy}% akurasi`
+                : 'Akurasi tercatat setelah menjawab';
 
+            const hasTrainedLetter = keypointNet.trainedLettersSet.size >= 1 ||
+                Object.values(bisindoCustomPoses || {}).some(samples => Array.isArray(samples) && samples.length > 0);
             const achievements = [
-                { title: 'Langkah Pertama', desc: 'Mulai petualangan belajar isyarat', icon: 'fa-hand-sparkles', unlocked: true },
+                { title: 'Langkah Pertama', desc: 'Selesaikan aktivitas belajar pertamamu', icon: 'fa-hand-sparkles', unlocked: gameState.triviaAnsweredCount > 0 || totalStagesDone > 0 || gameState.checkedInToday },
                 { title: 'Api Semangat', desc: 'Pertahankan streak belajar 7+ hari', icon: 'fa-fire', unlocked: gameState.streak >= 7 },
                 { title: 'Penakluk Stage', desc: 'Selesaikan minimal 1 Stage', icon: 'fa-flag-checkered', unlocked: totalStagesDone >= 1 },
                 { title: 'Duta Budaya Tuli', desc: 'Jawab 3 pertanyaan trivia benar', icon: 'fa-brain', unlocked: gameState.triviaCorrect >= 3 },
-                { title: 'Pelatih huruf', desc: 'Latih huruf kustom di Kamera Isyarat', icon: 'fa-hand', unlocked: keypointNet.trainedLettersSet.size >= 1 },
+                { title: 'Pelatih huruf', desc: 'Latih huruf SIBI atau BISINDO di kamera', icon: 'fa-hand', unlocked: hasTrainedLetter },
                 { title: 'Master Inklusi', desc: 'Kumpulkan 500 total XP', icon: 'fa-crown', unlocked: gameState.xp >= 500 }
             ];
 
@@ -3975,20 +4080,37 @@
         function saveProfileName() {
             const inp = document.getElementById('profile-name-input');
             if (inp && inp.value.trim()) {
-                gameState.profileName = inp.value.trim();
+                gameState.profileName = inp.value.trim().slice(0, 32);
+                inp.value = gameState.profileName;
+                renderProfile();
                 saveGameProgress();
                 showToast(`Nama profil disimpan: ${gameState.profileName}`);
+            } else {
+                showToast('Nama profil tidak boleh kosong.');
             }
         }
 
-        function changeAvatarColor(bgClass, ringClass) {
+        function changeAvatarColor(bgClass, ringClass, persist = true) {
             const circle = document.getElementById('profile-avatar-circle');
             if (!circle) return;
-            if (!['bg-duo_green', 'bg-duo_blue', 'bg-duo_purple'].includes(bgClass) || !['ring-green-100', 'ring-blue-100', 'ring-purple-100'].includes(ringClass)) return;
+            const validAvatarPairs = {
+                'bg-duo_green': 'ring-green-100',
+                'bg-duo_blue': 'ring-blue-100',
+                'bg-duo_purple': 'ring-purple-100',
+                'bg-amber-500': 'ring-amber-100'
+            };
+            if (validAvatarPairs[bgClass] !== ringClass) return;
             gameState.avatarBg = bgClass;
             gameState.avatarRing = ringClass;
-            circle.className = `w-24 h-24 rounded-3xl ${bgClass} text-white flex items-center justify-center text-4xl shadow-md border-4 border-white ring-4 ${ringClass} shrink-0`;
-            if (typeof saveGameProgress === 'function') saveGameProgress();
+            circle.className = `w-20 h-20 sm:w-24 sm:h-24 rounded-3xl ${bgClass} text-white flex items-center justify-center text-4xl shadow-md border-4 border-white ring-4 ${ringClass} shrink-0 mx-auto sm:mx-0`;
+            document.querySelectorAll('[data-avatar-option]').forEach(button => {
+                const selected = button.dataset.avatarOption === bgClass;
+                button.setAttribute('aria-pressed', String(selected));
+                button.classList.toggle('ring-2', selected);
+                button.classList.toggle('ring-gray-800', selected);
+                button.classList.toggle('ring-transparent', !selected);
+            });
+            if (persist && typeof saveGameProgress === 'function') saveGameProgress();
         }
 
         function getNextLesson() {
@@ -4261,6 +4383,7 @@
                 if (activeLesson.qIdx < stage.questions.length) {
                     renderLessonQuestion();
                 } else {
+                    recordLearningDay({ showMessage: false });
                     const unit = gameState.units.find(u => u.id === unitId);
                     const firstCompletion = unit && !unit.completed.includes(stageIdx);
                     if (firstCompletion) {
@@ -4477,6 +4600,7 @@
 
         function appendTokenToSentence(token) {
             if (!token || token === '?') return;
+            recordLearningDay({ showMessage: false });
             if (token.length > 1) {
                 if (freeSentence.length > 0 && !freeSentence.endsWith(' ')) freeSentence += ' ';
                 freeSentence += token + ' ';
@@ -5959,13 +6083,13 @@
             },
             {
                 cat: 'SISTEM ISYARAT',
-                q: 'Apa perbedaan utama antara BISINDO dan SIBI di Indonesia?',
+                q: 'Pernyataan mana yang paling tepat tentang BISINDO dan SIBI?',
                 opts: [
-                    'BISINDO adalah bahasa alami komunitas Tuli (2 tangan), sedangkan SIBI adalah sistem isyarat buatan mengikuti tata bahasa lisan (1 tangan).',
-                    'BISINDO hanya digunakan untuk menulis angka, sedangkan SIBI untuk percakapan.'
+                    'BISINDO berkembang alami di komunitas Tuli, sedangkan SIBI adalah sistem yang mengikuti struktur Bahasa Indonesia.',
+                    'BISINDO dan SIBI adalah nama berbeda untuk bahasa isyarat yang sama.'
                 ],
                 ans: 0,
-                exp: 'BISINDO dikembangkan secara organik oleh Teman Tuli Indonesia (GERKATIN), sedangkan SIBI diadaptasi untuk kurikulum pendidikan formal.'
+                exp: 'Keduanya berbeda dari sisi sejarah dan struktur. Jumlah tangan saja tidak cukup untuk menentukan suatu isyarat termasuk BISINDO atau SIBI.'
             },
             {
                 cat: 'ETIKA INKLUSIF',
@@ -5996,16 +6120,81 @@
                 ],
                 ans: 0,
                 exp: 'Kata "Tuli" (dengan huruf T kapital) mencerminkan kebanggaan identitas budaya, bahasa, dan komunitas yang setara.'
+            },
+            {
+                cat: 'MITOS VS FAKTA',
+                q: 'Apakah semua Teman Tuli membaca gerak bibir dengan lancar?',
+                opts: ['Tidak. Kemampuan dan pilihan komunikasi setiap orang berbeda.', 'Ya. Semua Teman Tuli pasti membaca gerak bibir.'],
+                ans: 0,
+                exp: 'Jangan menganggap satu cara komunikasi cocok untuk semua orang. Tanyakan dengan sopan cara komunikasi yang nyaman.'
+            },
+            {
+                cat: 'MITOS VS FAKTA',
+                q: 'Apakah bahasa isyarat hanya menerjemahkan kata demi kata dari bahasa lisan?',
+                opts: ['Tidak. Bahasa isyarat punya tata bahasa dan cara menyampaikan makna sendiri.', 'Ya. Setiap isyarat selalu punya urutan dan struktur yang sama dengan bahasa lisan.'],
+                ans: 0,
+                exp: 'Bahasa isyarat adalah bahasa visual yang memiliki tata bahasa sendiri, bukan sekadar gerakan untuk setiap kata lisan.'
+            },
+            {
+                cat: 'VARIASI BAHASA',
+                q: 'Mengapa isyarat yang sama dapat memiliki variasi di daerah atau komunitas berbeda?',
+                opts: ['Bahasa berkembang dalam komunitas dan dapat memiliki variasi lokal.', 'Salah satu komunitas pasti menggunakan bahasa yang keliru.'],
+                ans: 0,
+                exp: 'Variasi lokal adalah hal wajar dalam bahasa. Belajar dari komunitas setempat membantu kita memakai isyarat yang sesuai konteks.'
+            },
+            {
+                cat: 'BAHASA VISUAL',
+                q: 'Saat bercakap dengan bahasa isyarat, mengapa posisi wajah dan tangan perlu terlihat?',
+                opts: ['Agar lawan bicara dapat melihat bentuk tangan, gerakan, dan ekspresi.', 'Supaya kamera selalu mengenali semua isyarat dengan sempurna.'],
+                ans: 0,
+                exp: 'Wajah, tangan, arah, dan gerakan dapat membawa informasi. Pencahayaan yang cukup juga membantu komunikasi dan deteksi kamera.'
+            },
+            {
+                cat: 'ETIKA INKLUSIF',
+                q: 'Apa yang sebaiknya dilakukan sebelum membantu Teman Tuli?',
+                opts: ['Tawarkan bantuan dan tunggu jawabannya.', 'Langsung menarik tangan atau tubuhnya ke arah yang kita pilih.'],
+                ans: 0,
+                exp: 'Tanyakan terlebih dahulu. Menghormati pilihan dan ruang pribadi berlaku dalam setiap komunikasi.'
+            },
+            {
+                cat: 'ETIKA INKLUSIF',
+                q: 'Saat berbicara dalam kelompok dengan Teman Tuli, sikap mana yang membantu?',
+                opts: ['Berbicara bergantian dan menjaga wajah tetap terlihat.', 'Berbicara bersamaan dari berbagai arah agar percakapan lebih cepat.'],
+                ans: 0,
+                exp: 'Giliran bicara dan pandangan yang jelas membantu mengikuti percakapan visual.'
+            },
+            {
+                cat: 'ETIKA INKLUSIF',
+                q: 'Jika belum tahu isyarat untuk suatu kata, apa pilihan yang baik?',
+                opts: ['Jujur, lalu tanyakan atau gunakan ejaan jari bila disepakati.', 'Berpura-pura paham dan terus menebak tanpa konfirmasi.'],
+                ans: 0,
+                exp: 'Konfirmasi dengan ramah mencegah salah paham. Ejaan jari dapat menjadi bantuan, sesuai kebiasaan dan konteks komunitas.'
+            },
+            {
+                cat: 'VARIASI BAHASA',
+                q: 'Apakah BISINDO punya satu isyarat yang selalu sama di seluruh Indonesia?',
+                opts: ['Tidak selalu; ada variasi antarwilayah dan komunitas.', 'Ya. Semua daerah memakai satu bentuk yang tidak pernah bervariasi.'],
+                ans: 0,
+                exp: 'Seperti bahasa lain, BISINDO dapat memiliki variasi regional. Perhatikan konteks dan belajar dari penutur komunitas setempat.'
+            },
+            {
+                cat: 'MITOS VS FAKTA',
+                q: 'Apakah ekspresi wajah dalam bahasa isyarat hanya hiasan?',
+                opts: ['Bukan. Ekspresi dapat memberi informasi penting dalam komunikasi.', 'Ya. Ekspresi wajah tidak pernah membawa makna.'],
+                ans: 0,
+                exp: 'Ekspresi wajah dan gerak tubuh dapat menjadi bagian dari pesan. Maknanya bergantung pada bahasa dan konteks.'
             }
         ];
 
         let currentTriviaIdx = 0;
         let triviaCombo = 1;
         let triviaAnswered = false;
+        let triviaSessionCorrect = 0;
+        let activeTriviaOptionIndices = [];
         const TRIVIA_SESSION_CONFIG = {
-            myths: { title: 'Mitos & Fakta', questions: [0] },
-            language: { title: 'Bahasa Isyarat', questions: [1, 3] },
-            culture: { title: 'Etika & Budaya Tuli', questions: [2, 4] }
+            myths: { title: 'Mitos & Fakta', questions: [0, 5, 6, 13] },
+            language: { title: 'Bahasa Isyarat', questions: [1, 3, 7, 8, 12] },
+            culture: { title: 'Etika & Budaya Tuli', questions: [2, 4, 9, 10, 11] }
         };
         let activeTriviaQuestionIndices = [0];
         let activeTriviaSessionTitle = TRIVIA_SESSION_CONFIG.myths.title;
@@ -6024,6 +6213,7 @@
             activeTriviaSessionTitle = session.title;
             currentTriviaIdx = 0;
             triviaCombo = 1;
+            triviaSessionCorrect = 0;
             document.getElementById('trivia-session-hub')?.classList.add('hidden');
             document.getElementById('trivia-mission-session')?.classList.add('hidden');
             document.getElementById('trivia-quiz-session')?.classList.remove('hidden');
@@ -6044,6 +6234,7 @@
             if (!activeTriviaQuestionIndices.length) return;
             currentTriviaIdx = Math.max(0, Math.min(index, activeTriviaQuestionIndices.length - 1));
             const item = TRIVIA_BANK[activeTriviaQuestionIndices[currentTriviaIdx]];
+            activeTriviaOptionIndices = shuffleItems(item.opts.map((_, optionIndex) => optionIndex));
             triviaAnswered = false;
 
             const badge = document.getElementById('trivia-category-badge');
@@ -6059,14 +6250,14 @@
             if (expBox) expBox.classList.add('hidden');
             if (nextBtn) nextBtn.classList.add('hidden');
             const score = document.getElementById('trivia-score-display');
-            if (score) score.innerText = gameState.triviaCorrect;
+            if (score) score.innerText = triviaSessionCorrect;
 
             if (optsContainer) {
-                optsContainer.innerHTML = item.opts.map((opt, idx) => `
+                optsContainer.innerHTML = activeTriviaOptionIndices.map((sourceIndex, idx) => `
                     <button onclick="answerTrivia(${idx})" id="trivia-opt-${idx}" 
                         class="w-full text-left p-4 rounded-2xl border-2 border-gray-200 bg-white hover:bg-gray-50 font-extrabold text-sm text-gray-700 btn-chunky btn-gray transition flex items-start space-x-3">
                         <span class="w-7 h-7 rounded-xl bg-gray-100 text-gray-600 font-black text-xs flex items-center justify-center shrink-0 mt-0.5">${String.fromCharCode(65 + idx)}</span>
-                        <span class="flex-1 leading-relaxed">${opt}</span>
+                        <span class="flex-1 leading-relaxed">${item.opts[sourceIndex]}</span>
                     </button>
                 `).join('');
             }
@@ -6074,21 +6265,24 @@
 
         function answerTrivia(chosenIdx) {
             if (triviaAnswered) return;
-            triviaAnswered = true;
-
             const item = TRIVIA_BANK[activeTriviaQuestionIndices[currentTriviaIdx]];
-            const isCorrect = chosenIdx === item.ans;
+            if (!Number.isInteger(chosenIdx) || chosenIdx < 0 || chosenIdx >= activeTriviaOptionIndices.length) return;
+            triviaAnswered = true;
+            const correctDisplayIndex = activeTriviaOptionIndices.indexOf(item.ans);
+            const isCorrect = chosenIdx === correctDisplayIndex;
+            gameState.triviaAnsweredCount += 1;
+            recordLearningDay({ showMessage: false });
 
             const expBox = document.getElementById('trivia-explanation-box');
             const fbHeader = document.getElementById('trivia-feedback-header');
             const fbText = document.getElementById('trivia-explanation-text');
             const nextBtn = document.getElementById('btn-next-trivia');
 
-            item.opts.forEach((_, idx) => {
+            activeTriviaOptionIndices.forEach((_, idx) => {
                 const btn = document.getElementById(`trivia-opt-${idx}`);
                 if (!btn) return;
                 btn.disabled = true;
-                if (idx === item.ans) {
+                if (idx === correctDisplayIndex) {
                     btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-duo_green bg-green-50 font-extrabold text-sm text-green-900 flex items-start space-x-3';
                 } else if (idx === chosenIdx && !isCorrect) {
                     btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-duo_red bg-red-50 font-extrabold text-sm text-red-900 flex items-start space-x-3';
@@ -6099,6 +6293,7 @@
                 const earned = 15 * triviaCombo;
                 triviaCombo = Math.min(4, triviaCombo + 1);
                 gameState.triviaCorrect += 1;
+                triviaSessionCorrect += 1;
                 addXP(earned);
                 advanceQuest('q2', 1);
 
@@ -6114,10 +6309,12 @@
             const comboEl = document.getElementById('trivia-combo-display');
             const scoreEl = document.getElementById('trivia-score-display');
             if (comboEl) comboEl.innerText = `x${triviaCombo}`;
-            if (scoreEl) scoreEl.innerText = gameState.triviaCorrect;
+            if (scoreEl) scoreEl.innerText = triviaSessionCorrect;
 
             fbText.innerText = item.exp;
             expBox.classList.remove('hidden');
+            renderProfile();
+            saveGameProgress();
             if (nextBtn) nextBtn.innerHTML = currentTriviaIdx >= activeTriviaQuestionIndices.length - 1
                 ? 'Sesi Selesai <i class="fa-solid fa-check ml-1" aria-hidden="true"></i>'
                 : 'Pertanyaan Berikutnya <i class="fa-solid fa-arrow-right ml-1" aria-hidden="true"></i>';
@@ -6127,7 +6324,7 @@
         function loadNextTrivia() {
             if (currentTriviaIdx >= activeTriviaQuestionIndices.length - 1) {
                 backToTriviaHub();
-                showToast(`Sesi ${activeTriviaSessionTitle} selesai.`);
+                showToast(`Sesi ${activeTriviaSessionTitle} selesai • ${triviaSessionCorrect}/${activeTriviaQuestionIndices.length} benar.`);
                 return;
             }
             loadTriviaQuestion(currentTriviaIdx + 1);
