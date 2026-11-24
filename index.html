@@ -1524,6 +1524,10 @@
             }
         }
 
+        const SIBI_LEARNING_TILE_IMAGES = Object.fromEntries(
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => [letter, `assets/abjad/tile-${letter.toLowerCase()}.png`])
+        );
+
         function renderSignHandIllustration(system, letter, opts = {}) {
             const cleanLetter = (letter || 'A').toString().trim().toUpperCase()[0] || 'A';
             const sys = (system || 'SIBI').toUpperCase();
@@ -1531,6 +1535,15 @@
             const accent = isBisindo ? '#1CB0F6' : '#58CC02';
             const bgTint = isBisindo ? '#EFF8FF' : '#F2FDE8';
             const showBadge = Boolean(opts.showBadge);
+
+            if (!isBisindo && SIBI_LEARNING_TILE_IMAGES[cleanLetter]) {
+                return `
+                    <div class="relative w-full h-full">
+                        <img src="${SIBI_LEARNING_TILE_IMAGES[cleanLetter]}" alt="Isyarat huruf ${cleanLetter} SIBI" class="w-full h-full object-contain select-none pointer-events-none" loading="lazy" decoding="async" draggable="false">
+                        ${showBadge ? `<span class="absolute top-1 right-1 rounded-md bg-duo_green px-1.5 py-0.5 text-[10px] font-black text-white">${cleanLetter}</span>` : ''}
+                    </div>
+                `;
+            }
 
             const innerGraphics = isBisindo
                 ? renderBisindoTwoHandPoseSVG(cleanLetter, accent)
