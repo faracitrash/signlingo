@@ -3748,6 +3748,13 @@
             // SIBI alphabet is single-hand. Ask MediaPipe for one hand so curved poses (such as C)
             // cannot be blocked by a duplicate/false second-hand detection.
             if (handsModel) handsModel.setOptions({ maxNumHands: sys === 'SIBI' ? 1 : 2 });
+            // Clear any two-hand BISINDO overlay history when switching to SIBI, so no blue ghost hand remains.
+            if (sys === 'SIBI') {
+                visualSmoothedHands = [];
+                visualRecentTwoHands = [];
+                visualHandLastSeenAt = [];
+                visualLastHandsAt = 0;
+            }
             sapaEngine.signSystem = sys;
             sapaEngine.resetBuffer();
             sibiTemporalSvm.reset();
