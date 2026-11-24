@@ -4119,13 +4119,13 @@
                 const fingerMotion = ((tipSpeeds[0] || 0) + (tipSpeeds[1] || 0)) / 2;
                 const palmMotion = [0, 5, 9, 13, 17].reduce((sum, i) => sum + Math.hypot(curr[i].x - prev[i].x, curr[i].y - prev[i].y) / handScale, 0) / 5;
                 const motion = Math.max(fingerMotion, palmMotion);
-                const alpha = Math.max(0.30, Math.min(0.92, 0.30 + motion * 3.8));
+                const alpha = Math.max(0.22, Math.min(0.76, 0.22 + motion * 2.8));
 
                 // Smooth each distal finger joint independently; occlusion spikes no longer erase a whole finger line.
                 stabilized.push(curr.map((p, i) => {
                     const jointSpeed = Math.hypot(p.x - prev[i].x, p.y - prev[i].y) / handScale;
                     const jointAlpha = VISUAL_DISTAL_JOINTS.has(i)
-                        ? Math.max(0.22, Math.min(0.76, 0.24 + jointSpeed * 2.1))
+                        ? Math.max(0.18, Math.min(0.58, 0.18 + jointSpeed * 1.6))
                         : alpha;
                     return {
                         x: jointAlpha * p.x + (1 - jointAlpha) * prev[i].x,
@@ -4154,7 +4154,7 @@
                 const inner = handIndex % 2 === 0 ? (skeletonColor || '#58CC02') : '#38BDF8';
                 const outer = 'rgba(3, 7, 18, 0.94)';
                 ctx.save();
-                ctx.globalAlpha = ghost ? 0.42 : 1;
+                ctx.globalAlpha = ghost ? 0.62 : 1;
                 ctx.setLineDash(ghost ? [7, 5] : []);
 
                 // Dark casing keeps each bone legible over skin, the other hand, and overlapping fingers.
@@ -4239,7 +4239,7 @@
                 // Keep both slots through brief occlusion so the returning hand does not swap identities.
                 visualSmoothedHands = cleanHands.map(hand => hand.map(p => ({ ...p })));
                 visualLastHandsAt = now;
-            } else if (visualSmoothedHands.length && now - visualLastHandsAt < 160) {
+            } else if (visualSmoothedHands.length && now - visualLastHandsAt < 280) {
                 cleanHands = visualSmoothedHands;
                 cleanHands.forEach((_, i) => ghostHands.add(i));
             } else {
