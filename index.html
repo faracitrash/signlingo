@@ -3662,8 +3662,7 @@
                 if (signSystem === 'BISINDO') {
                     payload = loadBisindoCustomPoses() || {};
                 } else {
-                    // Pull account samples down before exporting so device-local JSON includes cloud training.
-                    if (window.SignLingoCloud?.ready && window.SignLingoCloud?.user) await keypointNet.syncFromCloud();
+                    // SIBI export copies the device's saved training data directly to the clipboard.
                     payload = JSON.parse(localStorage.getItem(SIBI_CUSTOM_STORAGE_KEY) || '{}') || {};
                 }
             } catch (err) {
@@ -3674,6 +3673,13 @@
             const sampleCount = letters.reduce((sum, letter) => sum + payload[letter].length, 0);
             if (!sampleCount) {
                 showToast(`Belum ada sampel ${systemName} tersimpan di browser ini.`, 'fa-solid fa-circle-info text-duo_blue');
+                return;
+            }
+
+            if (systemName === 'SIBI') {
+                const snippet = `const PERMANENT_TRAINED_POSES = ${JSON.stringify(payload)};`;
+                copyTrainingExportText(snippet, `signlingo-sibi-latihan-${new Date().toISOString().slice(0, 10)}.txt`,
+                    `Data SIBI disalin: ${letters.length} huruf, ${sampleCount} sampel. Sekarang bisa ditempel.`);
                 return;
             }
 
