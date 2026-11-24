@@ -4463,6 +4463,27 @@
                     : landmarksArr;
                 const skeletonColor = signSystem === 'SIBI' ? '#58CC02' : signSystem === 'BISINDO' ? '#1CB0F6' : '#CE82FF';
 
+                if (signSystem === 'SIBI' && landmarksArr.length !== 1) {
+                    sapaEngine.resetBuffer();
+                    sibiTemporalSvm.reset();
+                    cooldownLockedToken = null;
+                    holdElapsedMs = 0;
+                    if (handCountBadge) {
+                        handCountBadge.innerText = 'SIBI: gunakan 1 tangan';
+                        handCountBadge.classList.remove('border-green-400');
+                        handCountBadge.classList.add('border-white/20');
+                    }
+                    const trainingButton = document.getElementById('btn-run-tf-fit');
+                    if (isRecordingTFCalibration && tfCalibMode === 'SIBI' && trainingButton) {
+                        trainingButton.innerHTML = `<i class="fa-solid fa-hand"></i> <span>Perlu 1 tangan (${tfCalibSamples.length}/${TF_CALIBRATION_SAMPLE_TARGET})</span>`;
+                    }
+                    const top3El = document.getElementById('tf-top3-probs');
+                    if (top3El) top3El.innerHTML = '<span class="text-amber-300">SIBI memakai satu tangan. Keluarkan tangan kedua dari kamera.</span>';
+                    drawHandOverlayDirect(displayLandmarksArr, 'Gunakan 1 tangan', skeletonColor);
+                    updateDetectionUI('?', 0, dtMs);
+                    return;
+                }
+
                 // Update 63-D Keypoint Radar
                 keypointNet.drawRadar(displayLandmarksArr[0], skeletonColor);
 
