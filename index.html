@@ -3628,31 +3628,44 @@
         };
 
         function exportTrainedModelCode() {
-            if (signSystem === 'BISINDO') {
-                const payload = loadBisindoCustomPoses();
-                const letters = Object.keys(payload).filter(letter => Array.isArray(payload[letter]) && payload[letter].length > 0);
-                const sampleCount = letters.reduce((sum, letter) => sum + payload[letter].length, 0);
-                if (!sampleCount) {
-                    showToast('Belum ada sampel BISINDO tersimpan di browser ini.', 'fa-solid fa-circle-info text-duo_blue');
-                    return;
+            let payload = {};
+            let systemName = signSystem;
+            try {
+                if (signSystem === 'BISINDO') {
+                    payload = loadBisindoCustomPoses() || {};
+                } else {
+                    // Local storage is the source of truth for phone calibration. The lightweight
+                    // mobile path intentionally clears TensorFlow's temporary training arrays.
+                    payload = JSON.parse(localStorage.getItem(SIBI_CUSTOM_STORAGE_KEY) || '{}') || {};
                 }
-                const snippet = `const BISINDO_PERMANENT_TRAINED_POSES = ${JSON.stringify(payload)};`;
-                copyTrainingExportText(snippet, `bisindo-trained-poses-${Date.now()}.txt`, `Data BISINDO ${letters.length} huruf (${sampleCount} sampel) diekspor.`);
+            } catch (err) {
+                console.warn('Data latihan tidak dapat dibaca untuk ekspor:', err);
+            }
+
+            const letters = Object.keys(payload).filter(letter => Array.isArray(payload[letter]) && payload[letter].length > 0);
+            const sampleCount = letters.reduce((sum, letter) => sum + payload[letter].length, 0);
+            if (!sampleCount) {
+                showToast(`Belum ada sampel ${systemName} tersimpan di browser ini.`, 'fa-solid fa-circle-info text-duo_blue');
                 return;
             }
-            if (keypointNet.trainedLettersSet.size === 0) {
-                showToast('Belum ada huruf yang dilatih untuk diekspor.', 'fa-solid fa-circle-info text-duo_blue');
-                return;
-            }
-            const customPayload = {};
-            const baseCount = ALPHABET.length * 10;
-            for (let i = baseCount; i < keypointNet.customSamplesX.length; i++) {
-                const ltr = ALPHABET[keypointNet.customSamplesY[i]];
-                if (!customPayload[ltr]) customPayload[ltr] = [];
-                customPayload[ltr].push(keypointNet.customSamplesX[i].map(v => Number(v.toFixed(4))));
-            }
-            const codeSnippet = `const PERMANENT_TRAINED_POSES = ${JSON.stringify(customPayload)};`;
-            copyTrainingExportText(codeSnippet, `sibi-trained-poses-${Date.now()}.txt`, `Data SIBI ${keypointNet.trainedLettersSet.size} huruf diekspor.`);
+
+            const exportData = {
+                app: 'SignLingo',
+                format: 'signlingo-trained-poses-v1',
+                system: systemName,
+                exportedAt: new Date().toISOString(),
+                letters: payload
+            };
+            const json = JSON.stringify(exportData, null, 2);
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(new Blob([json], { type: 'application/json;charset=utf-8' }));
+            link.href = url;
+            link.download = `signlingo-${systemName.toLowerCase()}-latihan-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1500);
+            showToast(`File JSON latihan ${systemName} diunduh: ${letters.length} huruf, ${sampleCount} sampel.`);
         }
 
         function copyTrainingExportText(text, filename, successMessage) {
