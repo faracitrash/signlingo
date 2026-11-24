@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owns(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/signlingoData/{documentId} {
+      allow read, write: if owns(userId);
+    }
+
+    match /users/{userId}/trained_signs/{poseId} {
+      allow read, write: if owns(userId);
+    }
+
+    match /users/{userId}/bisindo_trained_signs/{poseId} {
+      allow read, write: if owns(userId);
+    }
+  }
+}
