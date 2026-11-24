@@ -3745,6 +3745,9 @@
 
         function setSignSystem(sys) {
             signSystem = sys;
+            // SIBI alphabet is single-hand. Ask MediaPipe for one hand so curved poses (such as C)
+            // cannot be blocked by a duplicate/false second-hand detection.
+            if (handsModel) handsModel.setOptions({ maxNumHands: sys === 'SIBI' ? 1 : 2 });
             sapaEngine.signSystem = sys;
             sapaEngine.resetBuffer();
             sibiTemporalSvm.reset();
@@ -4288,7 +4291,7 @@
                     });
                     // Threshold pelacakan dinaikkan untuk mengurangi landmark dari tangan yang tracking-nya goyah.
                     // MediaPipe menjalankan ulang deteksi ketika tracking gagal; nilai lebih tinggi dapat menambah latency.
-                    handsModel.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.48, minTrackingConfidence: 0.55 });
+                    handsModel.setOptions({ maxNumHands: signSystem === 'SIBI' ? 1 : 2, modelComplexity: 1, minDetectionConfidence: 0.48, minTrackingConfidence: 0.55 });
                     handsModel.onResults(onResultsHands);
                 }
 
