@@ -2937,6 +2937,7 @@
                 this.customSamplesY = [];
                 this.trainedLettersSet = new Set();
                 this.customTrainedLettersSet = new Set();
+                this.cloudSyncPromise = null;
                 this.isMobileLite = isMobileLiteDevice();
                 this.realSamplesByLetter = {};
                 this.buildModel();
@@ -3242,6 +3243,17 @@
             }
 
             async syncFromCloud() {
+                if (!window.SignLingoCloud || !window.SignLingoCloud.ready || !this.model) return;
+                if (this.cloudSyncPromise) return this.cloudSyncPromise;
+                this.cloudSyncPromise = this.syncFromCloudInternal();
+                try {
+                    return await this.cloudSyncPromise;
+                } finally {
+                    this.cloudSyncPromise = null;
+                }
+            }
+
+            async syncFromCloudInternal() {
                 if (!window.SignLingoCloud || !window.SignLingoCloud.ready || !this.model) return;
                 const records = await window.SignLingoCloud.loadAllTrainedPoses();
                 const safeRecords = Array.isArray(records) ? records : [];
@@ -3606,6 +3618,7 @@
                     saveGameProgress();
                 }
 
+                await keypointNet.syncFromCloud();
                 const cloudBisindoPoses = await window.SignLingoCloud.loadAllBisindoTrainedPoses();
                 if (cloudBisindoPoses.length) {
                     for (const record of cloudBisindoPoses) saveBisindoCustomPose(record.letter, record.samples, false);
@@ -3637,20 +3650,20 @@
         };
 
         window.onSignLingoCloudReady = function() {
-            if (keypointNet && keypointNet.hasPretrainedWeights) {
-                keypointNet.syncFromCloud();
+            if (keypointNet && window.SignLingoCloud?.user) {
+                keypointNet.syncFromCloud().catch(err => console.warn('Sinkronisasi SIBI dari akun gagal:', err));
             }
         };
 
-        function exportTrainedModelCode() {
+        async function exportTrainedModelCode() {
             let payload = {};
             let systemName = signSystem;
             try {
                 if (signSystem === 'BISINDO') {
                     payload = loadBisindoCustomPoses() || {};
                 } else {
-                    // Local storage is the source of truth for phone calibration. The lightweight
-                    // mobile path intentionally clears TensorFlow's temporary training arrays.
+                    // Pull account samples down before exporting so device-local JSON includes cloud training.
+                    if (window.SignLingoCloud?.ready && window.SignLingoCloud?.user) await keypointNet.syncFromCloud();
                     payload = JSON.parse(localStorage.getItem(SIBI_CUSTOM_STORAGE_KEY) || '{}') || {};
                 }
             } catch (err) {
@@ -5580,9 +5593,15 @@
                                         : `Permanen (${keypointNet.trainedLettersSet.size} Huruf)`;
                                     if (btn) btn.innerHTML = `<i class="fa-solid fa-hand"></i> <span>Rekam & Latih Pose Ini</span>`;
                                     if (result.mobileCalibration) {
-                                        showToast(result.cloudSaved
-                                            ? `Huruf ${targetLetter} langsung aktif dan tersimpan di akun serta HP.`
-                                            : `Huruf ${targetLetter} langsung aktif di HP ini. Login Google untuk sinkron ke perangkat lain.`);
+                                        if (result.localSaved && result.cloudSaved) {
+                                            showToast(`Huruf ${targetLetter} tersimpan di HP dan akun; kalibrasi langsung aktif.`);
+                                        } else if (result.localSaved) {
+                                            showToast(`Huruf ${targetLetter} tersimpan dan langsung aktif di HP ini.`);
+                                        } else if (result.cloudSaved) {
+                                            showToast(`Huruf ${targetLetter} tersimpan di akun, tetapi gagal disimpan di HP. Sinkronkan akun sebelum ekspor.`);
+                                        } else {
+                                            showToast(`Penyimpanan ${targetLetter} gagal. Ekspor tidak akan memuat huruf ini; coba rekam ulang.`);
+                                        }
                                     } else if (result.trainingError) {
                                         showToast(result.localSaved || result.cloudSaved
                                             ? `Sampel ${targetLetter} tersimpan; pelatihan model tertunda. Coba muat ulang halaman.`
